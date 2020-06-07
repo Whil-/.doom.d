@@ -76,6 +76,7 @@
 (setq calendar-week-start-day 1)
 (setq confirm-kill-emacs nil)
 
+(setq server-auth-dir (expand-file-name "~/.emacs.d/server/"))
 ;;; Built in major modes setup
 (setq calc-multiplication-has-precedence nil)
 
