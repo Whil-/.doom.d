@@ -1,5 +1,6 @@
 ;;; ~/.doom.d/config.local.el -*- lexical-binding: t; -*-
 
+(require 'defaults)
 (setq defaults-pim-dir (expand-file-name "f:/OneDrive - Wikström/")
       defaults-notes-dir (expand-file-name "f:/OneDrive - Wikström/Notes")
       defaults-tasks-dir (expand-file-name "f:/OneDrive - Wikström/Notes")

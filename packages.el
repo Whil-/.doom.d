@@ -17,10 +17,10 @@
 ;; https://github.com/raxod502/straight.el#the-recipe-format
 ;(package! another-package
 ;  :recipe (:host github :repo "username/repo"))
-(package! defaults
-  :recipe (:host github :repo "Whil-/emacs-defaults"))
-(package! ol-library
-  :recipe (:host github :repo "Whil-/ol-library"))
+;(package! defaults
+;  :recipe (:host github :repo "Whil-/emacs-defaults"))
+ (package! ol-library
+    :recipe (:host github :repo "Whil-/ol-library"))
 
 ;; If the package you are trying to install does not contain a PACKAGENAME.el
 ;; file, or is located in a subdirectory of the repo, you'll need to specify
@@ -42,10 +42,10 @@
 (package! doom-themes
 	:recipe (:host github :repo "Whil-/emacs-doom-themes"
 					 :branch "master"))
-
-;; (package! org-mode
-;;  		  :recipe (:host github :repo "Whil-/org-mode"
-;;  						 :branch "master"))
+;(unpin! org-mode)
+;(package! org-mode
+;  :recipe (:host github :repo "Whil-/org-mode"
+; 				 :branch "master"))
 
 ;; Specify a `:branch' to install a package from a particular branch or tag.
 ;; This is required for some packages whose default branch isn't 'master' (which
@@ -54,7 +54,6 @@
 
 ;; Use `:pin' to specify a particular commit to install.
 ;(package! builtin-package :pin "1a2b3c4d5e")
-
 
 ;; Doom's packages are pinned to a specific commit and updated from release to
 ;; release. The `unpin!' macro allows you to unpin single packages...

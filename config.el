@@ -3,7 +3,6 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
-
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Gustav Wikström"
@@ -27,26 +26,23 @@
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-one-light)
 
-;; Initialize the defaults as soon as possible
-(use-package! defaults
-  :demand
-  :config
-  (let ((local-config (expand-file-name "config.local.el")))
-    (when (file-exists-p local-config)
-      (load! local-config)))
-  (setq gw/index-file (expand-file-name defaults-pim-dir)
-        gw/misc-file (expand-file-name "misc.org" defaults-notes-dir)))
-
+;;;; Initialize the defaults as soon as possible
+(setq defaults-pim-dir (expand-file-name "f:/OneDrive - Wikström/")
+      defaults-notes-dir (expand-file-name "f:/OneDrive - Wikström/Notes")
+      defaults-tasks-dir (expand-file-name "f:/OneDrive - Wikström/Notes")
+      defaults-library-dir (expand-file-name "f:/OneDrive - Wikström/Library"))
+(setq gw/index-file (expand-file-name defaults-pim-dir)
+      gw/misc-file (expand-file-name "misc.org" defaults-notes-dir))
+;;;; OS-specific settings maybe
 (let* ((windows-file (expand-file-name "config.windows.el"))
        (linux-file (expand-file-name "config.linux.el")))
   (cond
    ((eq system-type 'windows-nt)
     (if (file-exists-p windows-file)
-        (load-file windows-file)))
+        (load! windows-file)))
    ((eq system-type 'gnu/linux)
     (if (file-exists-p linux-file)
-        (load-file linux-file)))))
-
+        (load! linux-file)))))
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory defaults-notes-dir)
@@ -76,7 +72,21 @@
 (setq calendar-week-start-day 1)
 (setq confirm-kill-emacs nil)
 
-(setq server-auth-dir (expand-file-name "~/.emacs.d/server/"))
+(defun gw/done ()
+  "Exit server buffers and hide the main Emacs window."
+  (interactive)
+  (server-edit)
+  (make-frame-invisible nil t))
+(map! "C-x C-c" #'gw/done)
+(map! "C-M-c" #'save-buffers-kill-emacs)
+(set-language-environment 'utf-8)
+(set-default-coding-systems 'utf-8-dos)
+(set-keyboard-coding-system 'utf-8-dos)
+(set-terminal-coding-system 'utf-8-dos)
+(setq locale-coding-system 'utf-8-dos)
+(prefer-coding-system 'utf-8-dos)
+;; Mostly for Org mode for it to format timestrings in english.
+(setq system-time-locale "C")
 ;;; Built in major modes setup
 (setq calc-multiplication-has-precedence nil)
 
@@ -131,7 +141,7 @@
         ol-library-video-dir (expand-file-name "Video" defaults-library-dir)
         ol-library-webpage-dir (expand-file-name "Web Page" defaults-library-dir)))
 (use-package! org
-  :mode "\\.org\\'"
+  :mode ("\\.org\\'" . org-mode)
   :init
   (setq org-todo-keyword (quote ((sequence "TODO(t!)"
                                            "|"
@@ -143,8 +153,9 @@
         org-hierarchical-todo-statistics nil
         org-src-window-setup 'current-window
         org-archive-location "%s_archive::datetree/"
-        org-default-notes-file defaults-tasks-dir
         ;; org-agenda
+        org-agenda-files (list defaults-tasks-dir)
+        org-default-notes-file defaults-tasks-dir
         org-agenda-file-regexp ".*tasks\\|meetings.*\\.org\\'"
         org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
                                    (timeline . "  % s")
@@ -214,7 +225,6 @@
                                        ("t" . "theorem"))))
 (after! org
   (setq org-startup-indented nil)
-  (setq org-agenda-files (list defaults-tasks-dir))
   (add-to-list 'org-export-backends 'md))
 (use-package! org-brain
   :bind ("C-c w" . gw/org-brain-visualize-open)
@@ -234,11 +244,6 @@
   (setq org-brain-file-from-input-function
         (lambda (file) (if (cdr file) (car file) "misc")))
   (setq org-brain-headline-entry-name-format-string "%2$s"))
-(after! '(org org-brain)
-  (when (server-running-p)
-    (org-agenda-list)
-    (org-todo-list)
-    (org-brain-visualize-random)))
 (use-package! magit
   :init
   (map! "C-c m" #'magit-status))
@@ -249,6 +254,10 @@
   :mode ("\\.\\(frm\\|bas\\|cls\\|vb\\)$" . visual-basic-mode)
   :init
   (setq visual-basic-mode-indent 4))
+;;; Prepair some background stuff
+(org-agenda-list)
+(org-todo-list)
+(org-brain-visualize-random)
 
 ;;; Custom functions
 (defun gw/split ()
@@ -277,3 +286,16 @@ windows in the buffer"
           (set-window-buffer (next-window) next-win-buffer)
           (select-window first-win)
           (if this-win-2nd (other-window 1))))))
+
+(defun gw/toggle-utf8-latin1 ()
+  (interactive)
+  (if (or (equal buffer-file-coding-system 'utf-8-dos)
+          (equal buffer-file-coding-system 'mule-utf-8-dos)
+          (equal buffer-file-coding-system 'utf-8-unix))
+      (progn
+        (set-buffer-file-coding-system 'latin-1) (save-buffer)
+        (message "buffer converted to latin-1"))
+    (set-buffer-file-coding-system 'utf-8) (save-buffer)
+    (message "buffer converted to utf-8")))
+
+(load! "config.workarounds.el")
