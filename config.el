@@ -71,6 +71,7 @@
 (menu-bar-mode)
 (setq calendar-week-start-day 1)
 (setq confirm-kill-emacs nil)
+(setq custom-file (concat doom-private-dir "custom.el"))
 
 (defun gw/done ()
   "Exit server buffers and hide the main Emacs window."
