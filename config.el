@@ -68,7 +68,8 @@
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
 ;;; Emacs configurations
-(menu-bar-mode)
+(menu-bar-mode 1)
+(scroll-bar-mode 1)
 (setq calendar-week-start-day 1)
 (setq confirm-kill-emacs nil)
 (setq custom-file (concat doom-private-dir "custom.el"))
@@ -80,11 +81,11 @@
   (make-frame-invisible nil t))
 (map! "C-x C-c" #'gw/done)
 (map! "C-M-c" #'save-buffers-kill-emacs)
-(set-language-environment 'utf-8)
-(set-default-coding-systems 'utf-8-dos)
-(set-keyboard-coding-system 'utf-8-dos)
-(set-terminal-coding-system 'utf-8-dos)
-(setq locale-coding-system 'utf-8-dos)
+;;(set-language-environment 'utf-8)
+;;(set-default-coding-systems 'utf-8-dos)
+;;(set-keyboard-coding-system 'utf-8-dos)
+;;(set-terminal-coding-system 'utf-8-dos)
+;;(setq locale-coding-system 'utf-8-dos)
 (prefer-coding-system 'utf-8-dos)
 ;; Mostly for Org mode for it to format timestrings in english.
 (setq system-time-locale "C")
@@ -300,3 +301,4 @@ windows in the buffer"
     (message "buffer converted to utf-8")))
 
 (load! "config.workarounds.el")
+
